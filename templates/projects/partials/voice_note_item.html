@@ -1,0 +1,72 @@
+<div class="voice-note-item border rounded p-3 mb-3" data-note-id="{{ note.id }}">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+        <div>
+            <strong>#{{ note.id }}</strong>
+            <span class="text-muted small ms-2">{{ note.created_at|date:"M j, H:i" }}</span>
+        </div>
+        {% if note.processing_status == 'pending' or note.processing_status == 'processing' %}
+        <span class="badge text-bg-warning">Processing</span>
+        {% elif note.processing_status == 'failed' %}
+        <span class="badge text-bg-danger">Failed</span>
+        {% else %}
+        <span class="badge text-bg-success">Completed</span>
+        {% endif %}
+    </div>
+
+    {% if note.processing_status == 'completed' %}
+    <p class="mb-1 note-summary">{{ note.summary|default:"—" }}</p>
+    {% if note.financial_preview %}
+    <p class="small text-muted mb-2 note-financial">{{ note.financial_preview }}</p>
+    {% endif %}
+    {% elif note.processing_status == 'failed' %}
+    <p class="text-danger small mb-2">{{ note.error_message }}</p>
+    <form method="post" action="{% url 'projects:voice_retry' pk=project.pk note_id=note.id %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-outline-primary">Retry</button>
+    </form>
+    {% else %}
+    <p class="text-muted small mb-2"><span class="spinner-border spinner-border-sm"></span> Processing…</p>
+    {% endif %}
+
+    {% if note.transcript %}
+    <details class="small mb-2">
+        <summary class="text-primary" style="cursor:pointer">Transcript</summary>
+        <p class="mt-2 mb-0 text-secondary note-transcript">{{ note.transcript|linebreaksbr }}</p>
+    </details>
+    {% endif %}
+
+    {% if note.processing_status == 'completed' %}
+    <div class="d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editNoteModal{{ note.id }}">Edit</button>
+        <form method="post" action="{% url 'projects:voice_delete' pk=project.pk note_id=note.id %}" onsubmit="return confirm('Delete this voice note?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+        <form method="post" action="{% url 'projects:voice_regenerate' pk=project.pk note_id=note.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Regenerate</button>
+        </form>
+    </div>
+
+    <div class="modal fade" id="editNoteModal{{ note.id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="{% url 'projects:voice_edit_summary' pk=project.pk note_id=note.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Summary #{{ note.id }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea name="summary" class="form-control" rows="5">{{ note.summary }}</textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

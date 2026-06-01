@@ -1,0 +1,40 @@
+{% load project_extras %}
+{% if financials %}
+{% if financials.income is not None or financials.expenses %}
+<div class="table-responsive finances-table-wrap">
+    <table class="table table-sm finances-table finances-table-readonly align-middle mb-0">
+        <colgroup>
+            <col class="finances-col-label">
+            <col class="finances-col-amount">
+        </colgroup>
+        <tbody>
+            {% if financials.income is not None %}
+            <tr>
+                <td class="fw-bold">Income</td>
+                <td class="finances-amount-cell text-end">{{ financials.income|money }}</td>
+            </tr>
+            {% endif %}
+            {% if financials.expenses %}
+            <tr class="finances-section-row">
+                <td colspan="2" class="fw-bold finances-section-label">Expense</td>
+            </tr>
+            {% for item in financials.expenses %}
+            <tr>
+                <td class="finances-expense-item">{{ item.label }}</td>
+                <td class="finances-amount-cell text-end">{{ item.amount|money }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+            <tr class="finances-profit-row">
+                <td class="fw-bold">Profit</td>
+                <td class="finances-amount-cell fw-semibold text-end">{{ profit|money }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted mb-0">No financial data yet.</p>
+{% endif %}
+{% else %}
+<p class="text-muted mb-0">No financial data yet.</p>
+{% endif %}

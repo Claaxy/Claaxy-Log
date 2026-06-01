@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load project_extras %}
+
+{% block title %}Dashboard — Claaxy Log{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">Dashboard</h1>
+    <a href="{% url 'projects:create' %}" class="btn btn-primary btn-sm">+ New Project</a>
+</div>
+
+<section class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3">Summary</h2>
+        <form method="get" class="dashboard-date-form mb-3">
+            {% if selected_project %}
+            <input type="hidden" name="project" id="dashboard-selected-project" value="{{ selected_project.pk }}">
+            {% endif %}
+            <div class="row g-2 align-items-end">
+                <div class="col-6 col-sm-auto">
+                    <label for="from-date" class="form-label form-label-sm mb-1">From date</label>
+                    <input type="date" id="from-date" name="from_date" class="form-control form-control-sm"
+                           value="{{ from_date }}">
+                </div>
+                <div class="col-6 col-sm-auto">
+                    <label for="to-date" class="form-label form-label-sm mb-1">To date</label>
+                    <input type="date" id="to-date" name="to_date" class="form-control form-control-sm"
+                           value="{{ to_date }}">
+                </div>
+                <div class="col-12 col-sm-auto">
+                    <button type="submit" class="btn btn-primary btn-sm w-100 w-sm-auto">Apply</button>
+                </div>
+            </div>
+        </form>
+        {% if date_range_error %}
+        <div class="alert alert-warning py-2 small mb-3">{{ date_range_error }}</div>
+        {% endif %}
+        {% if summary_ready %}
+        <div class="row g-2 g-md-3 dashboard-totals">
+            <div class="col-12 col-md-4">
+                <div class="dashboard-stat">
+                    <span class="dashboard-stat-label">Total Income</span>
+                    <span class="dashboard-stat-value">{{ total_income_display }}</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="dashboard-stat">
+                    <span class="dashboard-stat-label">Total Expense</span>
+                    <span class="dashboard-stat-value">{{ total_expense_display }}</span>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="dashboard-stat">
+                    <span class="dashboard-stat-label">Total Profit</span>
+                    <span class="dashboard-stat-value">{{ total_profit_display }}</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted small mb-0">Select From date and To date, then click Apply to view totals.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% if projects %}
+<div class="row g-3 dashboard-layout">
+    <div class="col-12 col-lg-4">
+        <section class="card shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="px-3 py-3 border-bottom">
+                    <h2 class="h6 mb-0">Projects</h2>
+                </div>
+                <div class="list-group list-group-flush dashboard-project-list">
+                    {% for project in projects %}
+                    <div class="dashboard-project-entry{% if selected_project.pk == project.pk %} is-selected{% endif %}"
+                         id="project-entry-{{ project.pk }}" data-project-id="{{ project.pk }}">
+                        <a href="?project={{ project.pk }}{% if from_date %}&amp;from_date={{ from_date }}{% endif %}{% if to_date %}&amp;to_date={{ to_date }}{% endif %}"
+                           class="list-group-item list-group-item-action dashboard-project-item{% if selected_project.pk == project.pk %} active{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div class="min-w-0">
+                                    <div class="fw-semibold text-truncate">{{ project.project_name }}</div>
+                                    <div class="small text-muted text-truncate">{{ project.customer_name }}</div>
+                                </div>
+                                <span class="badge {% if project.status == 'active' %}text-bg-success{% else %}text-bg-secondary{% endif %}">
+                                    {{ project.get_status_display }}
+                                </span>
+                            </div>
+                        </a>
+                        <div class="dashboard-project-expand d-lg-none{% if selected_project.pk != project.pk %} d-none{% endif %}">
+                            {% include 'core/partials/dashboard_project_finance.html' with project=project show_header=False %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-8 d-none d-lg-block">
+        <section class="card shadow-sm h-100">
+            <div class="card-body">
+                {% if selected_project %}
+                {% include 'core/partials/dashboard_project_finance.html' with project=selected_project show_header=True %}
+                {% else %}
+                <p class="text-muted mb-0">Select a project to view its finance summary.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+{% else %}
+<div class="card border-dashed text-center py-5">
+    <div class="card-body">
+        <p class="text-muted mb-3">No projects yet. Create your first project to start voice logging.</p>
+        <a href="{% url 'projects:create' %}" class="btn btn-primary">Create Project</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

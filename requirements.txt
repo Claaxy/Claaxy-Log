@@ -1,0 +1,9 @@
+django>=5.0
+django-allauth>=65.0
+python-dotenv>=1.0
+openai>=1.0
+whitenoise>=6.0
+requests>=2.31
+PyJWT>=2.8
+cryptography>=42.0
+gunicorn>=22.0

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In — Claaxy Log{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-md-5 text-center">
+                <h1 class="h3 mb-2">Claaxy Log</h1>
+                <p class="text-muted mb-4">AI voice logging for job costing</p>
+
+                {% if not google_configured %}
+                <div class="alert alert-warning text-start small mb-4">
+                    <strong>Google OAuth 未配置</strong><br>
+                    请在项目根目录 <code>.env</code> 中填写 <code>GOOGLE_CLIENT_ID</code> 和
+                    <code>GOOGLE_CLIENT_SECRET</code>，然后重启 <code>runserver</code>。
+                </div>
+                <button type="button" class="btn btn-secondary btn-lg w-100" disabled>
+                    Sign in with Google
+                </button>
+                {% else %}
+                <a href="/accounts/google/login/" class="btn btn-primary btn-lg w-100">
+                    Sign in with Google
+                </a>
+                {% endif %}
+                <p class="small text-muted mt-4 mb-0">
+                    Record voice notes, extract income &amp; expenses, see project profit at a glance.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

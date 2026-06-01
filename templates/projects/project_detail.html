@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static project_extras %}
+
+{% block title %}{{ project.project_name }} — Claaxy Log{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+    <div>
+        <a href="{% url 'core:dashboard' %}" class="text-decoration-none small">&larr; Dashboard</a>
+        <h1 class="h3 mb-1">{{ project.project_name }}</h1>
+        <p class="text-muted mb-0">Customer: {{ project.customer_name }}</p>
+    </div>
+    <form method="post" action="{% url 'projects:status_update' pk=project.pk %}" class="d-flex align-items-center gap-2">
+        {% csrf_token %}
+        {{ status_form.status }}
+    </form>
+</div>
+
+<div id="project-root" data-status-url="{% url 'projects:status' pk=project.pk %}" data-needs-poll="{{ needs_poll|yesno:'true,false' }}">
+
+<section class="card shadow-sm mb-4" id="summary-card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 mb-0">Finances</h2>
+            <span class="badge text-bg-light">{{ project.voice_note_count }} voice note{{ project.voice_note_count|pluralize }}</span>
+        </div>
+
+        <div id="finances-block" class="mb-0">
+            {% include 'projects/partials/finances_block.html' %}
+        </div>
+    </div>
+</section>
+
+<section class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Voice Log</h2>
+        <p class="text-muted small">Try saying: 这单卖了8000，人工5000，材料2000，吃饭100，加油50</p>
+
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <button type="button" id="btn-start" class="btn btn-primary btn-lg flex-grow-1 flex-md-grow-0">Start Recording</button>
+            <button type="button" id="btn-stop" class="btn btn-danger btn-lg flex-grow-1 flex-md-grow-0" disabled>Stop &amp; Upload</button>
+        </div>
+        <div id="rec-status" class="small text-muted mb-0">
+            <span id="rec-dot" class="rec-dot d-none"></span>
+            <span id="rec-timer">00:00</span>
+        </div>
+
+        <form id="upload-form" method="post" action="{% url 'projects:voice_upload' pk=project.pk %}" enctype="multipart/form-data" class="d-none">
+            {% csrf_token %}
+            <input type="file" name="audio" id="audio-input">
+        </form>
+    </div>
+</section>
+
+<section class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Voice Notes</h2>
+        <div id="voice-notes-list">
+            {% for note in voice_notes %}
+            {% include 'projects/partials/voice_note_item.html' with note=note project=project %}
+            {% empty %}
+            <p class="text-muted mb-0">No voice notes yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/recorder.js' %}"></script>
+<script src="{% static 'js/project_poll.js' %}"></script>
+{% endblock %}

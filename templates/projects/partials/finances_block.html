@@ -1,0 +1,78 @@
+{% load project_extras %}
+{% if financials.income is not None or financials.expenses %}
+<div class="table-responsive finances-table-wrap">
+    <table class="table table-sm finances-table align-middle mb-0">
+        <colgroup>
+            <col class="finances-col-label">
+            <col class="finances-col-amount">
+            <col class="finances-col-actions">
+        </colgroup>
+        <tbody>
+            <tr class="finances-income-row">
+                <td class="finances-income-label-cell fw-bold">Income</td>
+                <td class="finances-amount-cell">
+                    <form id="income-form-{{ project.pk }}" method="post" action="{% url 'projects:finances_income_update' pk=project.pk %}">
+                        {% csrf_token %}
+                        <input type="text" name="amount" class="form-control form-control-sm finances-amount-input"
+                               value="{% if financials.income is not None %}{{ financials.income|money }}{% endif %}"
+                               inputmode="decimal" placeholder="" aria-label="Income amount">
+                    </form>
+                </td>
+                <td class="finances-actions-cell">
+                    <button type="submit" form="income-form-{{ project.pk }}" class="btn btn-outline-primary btn-sm finances-icon-btn" title="Save" aria-label="Save income">
+                        <i class="bi bi-check-lg"></i>
+                    </button>
+                    {% if financials.income is not None %}
+                    <form method="post" action="{% url 'projects:finances_income_clear' pk=project.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm finances-icon-btn" title="Delete" aria-label="Delete income">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% if financials.expenses %}
+            <tr class="finances-section-row">
+                <td colspan="3" class="fw-bold finances-section-label">Expense</td>
+            </tr>
+            {% endif %}
+            {% for item in financials.expenses %}
+            <tr class="finances-expense-row">
+                <td class="finances-expense-item">
+                    <form id="expense-form-{{ project.pk }}-{{ forloop.counter0 }}" method="post"
+                          action="{% url 'projects:finances_expense_update' pk=project.pk index=forloop.counter0 %}">
+                        {% csrf_token %}
+                        <input type="text" name="label" class="form-control form-control-sm" value="{{ item.label }}" required aria-label="Expense item">
+                    </form>
+                </td>
+                <td class="finances-amount-cell">
+                    <input type="text" name="amount" form="expense-form-{{ project.pk }}-{{ forloop.counter0 }}"
+                           class="form-control form-control-sm finances-amount-input"
+                           value="{{ item.amount|money }}" inputmode="decimal" required aria-label="Expense amount">
+                </td>
+                <td class="finances-actions-cell">
+                    <button type="submit" form="expense-form-{{ project.pk }}-{{ forloop.counter0 }}" class="btn btn-outline-primary btn-sm finances-icon-btn" title="Save" aria-label="Save expense">
+                        <i class="bi bi-check-lg"></i>
+                    </button>
+                    <form method="post" action="{% url 'projects:finances_expense_delete' pk=project.pk index=forloop.counter0 %}" class="d-inline"
+                          onsubmit="return confirm('Delete this expense row?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm finances-icon-btn" title="Delete" aria-label="Delete expense">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr class="finances-profit-row">
+                <td class="fw-bold">Profit</td>
+                <td class="finances-amount-cell fw-semibold text-end" id="fin-profit">{{ profit|money }}</td>
+                <td class="finances-actions-cell"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted mb-0" id="fin-empty">Record a voice note mentioning income and expenses.</p>
+{% endif %}

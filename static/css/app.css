@@ -1,0 +1,368 @@
+body {
+    background-color: #f4f6f9;
+}
+
+.project-card {
+    transition: box-shadow 0.15s ease;
+}
+
+.project-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+
+.border-dashed {
+    border: 2px dashed #dee2e6;
+    background: #fff;
+}
+
+.rec-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #dc3545;
+    margin-right: 6px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.summary-text {
+    white-space: pre-wrap;
+}
+
+.finances-dl dt {
+    font-weight: 500;
+}
+
+.finances-table-wrap {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+}
+
+@media (min-width: 576px) {
+    .finances-table {
+        --bs-table-width: auto;
+        width: auto;
+        max-width: 100%;
+    }
+
+    .finances-col-label {
+        width: 14rem;
+    }
+
+    .finances-col-amount {
+        width: 7.25rem;
+    }
+
+    .finances-col-actions {
+        width: 4.75rem;
+    }
+
+    .finances-expense-item form,
+    .finances-expense-item .form-control {
+        max-width: 14rem;
+    }
+
+    .finances-amount-cell form,
+    .finances-amount-cell .form-control {
+        max-width: 7.25rem;
+    }
+
+    .finances-income-label-cell {
+        width: 5.5rem;
+        white-space: nowrap;
+    }
+
+    .finances-profit-row td:first-child {
+        width: 5.5rem;
+        white-space: nowrap;
+    }
+}
+
+.finances-label-col {
+    width: auto;
+    min-width: 8rem;
+}
+
+.finances-amount-col {
+    width: 9.5rem;
+}
+
+.finances-actions-col {
+    width: 4.75rem;
+}
+
+.finances-section-label {
+    padding-top: 0.75rem;
+    padding-bottom: 0.25rem;
+    border-bottom: none;
+}
+
+.finances-expense-item {
+    padding-left: 1.25rem;
+}
+
+.finances-amount-cell {
+    text-align: right;
+}
+
+.finances-table .finances-amount-input {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.finances-table .form-control-sm {
+    min-width: 0;
+}
+
+.finances-actions-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.finances-icon-btn {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.finances-icon-btn .bi {
+    font-size: 0.95rem;
+}
+
+.finances-profit-row td {
+    border-top-width: 2px;
+}
+
+@media (max-width: 575.98px) {
+    .finances-table-wrap {
+        overflow-x: visible;
+    }
+
+    .finances-table {
+        --bs-table-width: 100%;
+        width: 100%;
+    }
+
+    .finances-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .finances-table tbody tr {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .finances-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .finances-table tbody td {
+        border: none;
+    }
+
+    .finances-income-row,
+    .finances-expense-row {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.35rem;
+        padding-top: 0.45rem;
+        padding-bottom: 0.45rem;
+    }
+
+    .finances-income-row td,
+    .finances-expense-row td {
+        display: block;
+        padding: 0;
+    }
+
+    .finances-income-label-cell,
+    .finances-expense-item {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .finances-income-row .finances-amount-cell,
+    .finances-expense-row .finances-amount-cell {
+        flex: 0 0 5.75rem;
+        width: 5.75rem;
+        text-align: right;
+    }
+
+    .finances-income-row .finances-amount-cell form,
+    .finances-income-row .finances-amount-cell .form-control,
+    .finances-expense-row .finances-amount-cell .form-control {
+        width: 100%;
+        max-width: none;
+    }
+
+    .finances-income-row .finances-actions-cell,
+    .finances-expense-row .finances-actions-cell {
+        flex: 0 0 4.35rem;
+        width: 4.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.25rem;
+    }
+
+    .finances-expense-row {
+        padding-left: 1rem;
+    }
+
+    .finances-expense-item {
+        padding-left: 0;
+    }
+
+    .finances-section-row td {
+        display: block;
+        padding: 0.75rem 0 0.15rem;
+    }
+
+    .finances-profit-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.75rem 0;
+    }
+
+    .finances-profit-row td {
+        display: block;
+        padding: 0;
+        border: none;
+    }
+
+    .finances-profit-row .finances-actions-cell {
+        display: none;
+    }
+
+    .finances-profit-row .finances-amount-cell {
+        flex: 0 0 auto;
+        text-align: right;
+    }
+}
+
+.btn-lg {
+    min-height: 44px;
+}
+
+.dashboard-stat {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 0.85rem 1rem;
+    height: 100%;
+}
+
+.dashboard-stat-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+    margin-bottom: 0.35rem;
+}
+
+.dashboard-stat-value {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.dashboard-date-form .form-label-sm {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-project-item {
+    border-left: 3px solid transparent;
+}
+
+.dashboard-project-item.active {
+    border-left-color: var(--bs-primary);
+    background-color: rgba(13, 110, 253, 0.08);
+    color: var(--bs-body-color);
+    border-color: rgba(0, 0, 0, 0.125);
+}
+
+.dashboard-project-item.active .fw-semibold {
+    color: var(--bs-body-color);
+}
+
+.dashboard-project-item.active .text-muted {
+    color: var(--bs-secondary-color) !important;
+}
+
+.dashboard-project-list .list-group-item {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+}
+
+.dashboard-project-entry.is-selected .dashboard-project-item {
+    border-bottom: none;
+}
+
+.dashboard-project-expand {
+    padding: 0.75rem 1rem 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.dashboard-project-expand .dashboard-project-finance .finances-table-wrap {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.finances-table-readonly .finances-section-label {
+    padding-top: 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+    .dashboard-totals .dashboard-stat {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        background: transparent;
+        border-radius: 0;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #dee2e6;
+        height: auto;
+    }
+
+    .dashboard-totals .col-12:last-child .dashboard-stat {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .dashboard-totals .dashboard-stat-label {
+        display: inline;
+        margin-bottom: 0;
+        text-transform: none;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #212529;
+        letter-spacing: normal;
+    }
+
+    .dashboard-totals .dashboard-stat-value {
+        display: inline;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: right;
+    }
+}
