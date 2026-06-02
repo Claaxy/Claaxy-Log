@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Always load .env from project root (override shell env — avoids stale/bad system vars)
-load_dotenv(BASE_DIR / '.env', override=True)
+# Local dev: .env overrides shell. Docker sets DATABASE_PATH — keep injected env vars.
+load_dotenv(BASE_DIR / '.env', override=not os.environ.get('DATABASE_PATH'))
 
 
 def _clean_secret(value: str) -> str:
