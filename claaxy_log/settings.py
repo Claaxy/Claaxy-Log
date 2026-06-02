@@ -5,8 +5,14 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Local dev: .env overrides shell. Docker sets DATABASE_PATH — keep injected env vars.
-load_dotenv(BASE_DIR / '.env', override=not os.environ.get('DATABASE_PATH'))
+def _env_csv(name: str, default: str = '') -> list[str]:
+    """Parse comma-separated env var; treat empty string as unset."""
+    value = (os.environ.get(name) or default).strip()
+    return [part.strip() for part in value.split(',') if part.strip()]
+
+
+# Always load project .env (mounted in Docker). File wins over empty compose substitutions.
+load_dotenv(BASE_DIR / '.env', override=True)
 
 
 def _clean_secret(value: str) -> str:
@@ -31,11 +37,10 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = [
-    h.strip()
-    for h in os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
-    if h.strip()
-]
+ALLOWED_HOSTS = _env_csv('ALLOWED_HOSTS', '127.0.0.1,localhost')
+_site_domain = (os.environ.get('SITE_DOMAIN') or '').strip()
+if _site_domain and _site_domain not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_site_domain)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -180,11 +185,11 @@ ALLOWED_AUDIO_CONTENT_TYPES = {
     'audio/ogg',
 }
 
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
-    if origin.strip()
-]
+CSRF_TRUSTED_ORIGINS = _env_csv('CSRF_TRUSTED_ORIGINS')
+if _site_domain:
+    _origin = f'https://{_site_domain}'
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_origin)
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
