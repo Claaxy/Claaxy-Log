@@ -9,6 +9,7 @@ urlpatterns = [
     path('<int:pk>/', views.project_detail, name='detail'),
     path('<int:pk>/status/', views.project_status_api, name='status'),
     path('<int:pk>/status/update/', views.project_status_update, name='status_update'),
+    path('<int:pk>/delete/', views.project_delete, name='delete'),
     path('<int:pk>/voice-notes/upload/', views.voice_note_upload, name='voice_upload'),
     path(
         '<int:pk>/voice-notes/<int:note_id>/regenerate/',

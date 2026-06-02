@@ -68,6 +68,21 @@ def project_status_update(request, pk):
 
 
 @login_required
+@require_POST
+def project_delete(request, pk):
+    from django.contrib import messages
+
+    project = get_user_project(request.user, pk)
+    project_name = project.project_name
+    for note in project.voice_notes.all():
+        if note.audio_file:
+            note.audio_file.delete(save=False)
+    project.delete()
+    messages.success(request, f'Project "{project_name}" deleted.')
+    return redirect('core:dashboard')
+
+
+@login_required
 @require_GET
 def project_status_api(request, pk):
     project = get_user_project(request.user, pk)

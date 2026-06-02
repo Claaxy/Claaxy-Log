@@ -65,6 +65,23 @@
     </div>
 </section>
 
+<section class="card shadow-sm border-danger-subtle mb-4">
+    <div class="card-body">
+        <h2 class="h6 text-danger mb-2">Delete Project</h2>
+        <p class="text-muted small mb-3">
+            Permanently delete this project, all voice notes, and uploaded audio. This cannot be undone.
+        </p>
+        <form
+            method="post"
+            action="{% url 'projects:delete' pk=project.pk %}"
+            onsubmit="return confirm('Delete &quot;{{ project.project_name|escapejs }}&quot; and all voice notes? This cannot be undone.');"
+        >
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">Delete Project</button>
+        </form>
+    </div>
+</section>
+
 </div>
 {% endblock %}
 
