@@ -143,6 +143,14 @@ body {
     border-top-width: 2px;
 }
 
+.finances-add-expense-row td {
+    background-color: #f8f9fa;
+}
+
+.finances-add-expense-row .finances-icon-btn {
+    border-style: dashed;
+}
+
 @media (max-width: 575.98px) {
     .finances-table-wrap {
         overflow-x: visible;

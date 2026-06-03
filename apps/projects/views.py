@@ -210,6 +210,29 @@ def finances_income_clear(request, pk):
 
 @login_required
 @require_POST
+def finances_expense_add(request, pk):
+    from django.contrib import messages
+
+    project = get_user_project(request.user, pk)
+    form = ExpenseRowForm(request.POST)
+    if not form.is_valid():
+        err = next(iter(form.errors.values()), [None])[0]
+        messages.error(request, err or 'Could not add expense. Check the item name and amount.')
+        return redirect('projects:detail', pk=project.pk)
+
+    data = clone_financials(project.ai_financials)
+    expenses = data.get('expenses') or []
+    expenses.append({
+        'label': form.cleaned_data['label'].strip() or 'Expense',
+        'amount': float(form.cleaned_data['amount']),
+    })
+    data['expenses'] = expenses
+    save_manual_financials(project, data)
+    return redirect('projects:detail', pk=project.pk)
+
+
+@login_required
+@require_POST
 def finances_expense_update(request, pk, index):
     project = get_user_project(request.user, pk)
     form = ExpenseRowForm(request.POST)

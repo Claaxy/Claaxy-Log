@@ -1,5 +1,7 @@
 {% load project_extras %}
-{% if financials.income is not None or financials.expenses %}
+<p class="text-muted small mb-3">
+    Enter income and expenses below, or record a voice note — both update this table.
+</p>
 <div class="table-responsive finances-table-wrap">
     <table class="table table-sm finances-table align-middle mb-0">
         <colgroup>
@@ -15,7 +17,7 @@
                         {% csrf_token %}
                         <input type="text" name="amount" class="form-control form-control-sm finances-amount-input"
                                value="{% if financials.income is not None %}{{ financials.income|money }}{% endif %}"
-                               inputmode="decimal" placeholder="" aria-label="Income amount">
+                               inputmode="decimal" placeholder="0.00" aria-label="Income amount">
                     </form>
                 </td>
                 <td class="finances-actions-cell">
@@ -32,11 +34,9 @@
                     {% endif %}
                 </td>
             </tr>
-            {% if financials.expenses %}
             <tr class="finances-section-row">
                 <td colspan="3" class="fw-bold finances-section-label">Expense</td>
             </tr>
-            {% endif %}
             {% for item in financials.expenses %}
             <tr class="finances-expense-row">
                 <td class="finances-expense-item">
@@ -65,6 +65,24 @@
                 </td>
             </tr>
             {% endfor %}
+            <tr class="finances-expense-row finances-add-expense-row">
+                <td class="finances-expense-item">
+                    <form id="expense-add-form-{{ project.pk }}" method="post" action="{% url 'projects:finances_expense_add' pk=project.pk %}">
+                        {% csrf_token %}
+                        <input type="text" name="label" class="form-control form-control-sm" value="Expense" placeholder="Item name" aria-label="New expense item">
+                    </form>
+                </td>
+                <td class="finances-amount-cell">
+                    <input type="text" name="amount" form="expense-add-form-{{ project.pk }}"
+                           class="form-control form-control-sm finances-amount-input"
+                           inputmode="decimal" placeholder="0.00" aria-label="New expense amount">
+                </td>
+                <td class="finances-actions-cell">
+                    <button type="submit" form="expense-add-form-{{ project.pk }}" class="btn btn-outline-secondary btn-sm finances-icon-btn" title="Add expense" aria-label="Add expense">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </td>
+            </tr>
             <tr class="finances-profit-row">
                 <td class="fw-bold">Profit</td>
                 <td class="finances-amount-cell fw-semibold text-end" id="fin-profit">{{ profit|money }}</td>
@@ -73,6 +91,3 @@
         </tbody>
     </table>
 </div>
-{% else %}
-<p class="text-muted mb-0" id="fin-empty">Record a voice note mentioning income and expenses.</p>
-{% endif %}

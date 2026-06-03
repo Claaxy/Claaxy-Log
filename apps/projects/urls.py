@@ -33,6 +33,7 @@ urlpatterns = [
     ),
     path('<int:pk>/finances/income/', views.finances_income_update, name='finances_income_update'),
     path('<int:pk>/finances/income/clear/', views.finances_income_clear, name='finances_income_clear'),
+    path('<int:pk>/finances/expense/add/', views.finances_expense_add, name='finances_expense_add'),
     path(
         '<int:pk>/finances/expense/<int:index>/',
         views.finances_expense_update,
